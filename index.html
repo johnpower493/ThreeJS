@@ -1,0 +1,142 @@
+<!--Create a three.js page using html, css, bootstrap, javascript and /models/scene.gltf-->
+<html>
+<head>
+    <title>Three.js</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r126/three.min.js" integrity="sha512-n8IpKWzDnBOcBhRlHirMZOUvEq2bLRMuJGjuVqbzUJwtTsgwOgK5aS0c1JA647XWYfqvXve8k3PtZdzpipFjgg==" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/three@0.126.0/examples/js/loaders/GLTFLoader.js"></script>
+
+    <style>
+        body {
+            background-color: #000000;
+            /*Make page fit screen  */
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+
+        }
+        #canvas {
+            height: 25%;
+            width: 100%;
+            position: absolute; /*Make sure canvas is positioned on top of the page*/
+            top: 0;
+            left: 0;
+        }
+        /* container-fluid class is used to make the page take up the entire screen */
+        .container-fluid {
+            background-color: #000000;
+        }
+        /* navbar navbar-inverse class is used to make the navbar dark */
+        .navbar-inverse {
+            background-color: #000000;
+        }
+        /* Intro-Text class is used to make the text white */
+        .intro-text {
+            color: #ffffff;
+            padding-top: 70%;
+            padding-left: 30%;
+        }
+    </style>
+</head>
+<body>
+    <!--
+        Create a beautiful Navbar with bootstrap that is dark themed
+    -->
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Three.js</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#">Home</a></li>
+                <li><a href="#">Page 1</a></li>
+                <li><a href="#">Page 2</a></li>
+                <li><a href="#">Page 3</a></li>
+            </ul>
+        </div>
+
+
+ 
+    <!--Add a container for the canvas with title text overlay-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="intro-text">
+                    <h1>Three.js</h1>
+                    <p>Create a beautiful three.js page using html, css, bootstrap, javascript and /models/scene.gltf</p>
+                </div>
+            </div>
+            <div class="col-sm-9">
+            <div id="canvas"></div>
+        </div> 
+    </div>
+  
+
+    <script>
+        // import scene from /models/scene.gltf
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas').appendChild(renderer.domElement);
+        var loader = new THREE.GLTFLoader();
+        loader.load('models/scene.gltf', function (gltf) {
+            scene.add(gltf.scene);
+            camera.position.z = 5;
+            renderer.render(scene, camera);
+        });
+        // add rotation to the scene
+        var animate = function () {
+            requestAnimationFrame(animate);
+            scene.rotation.x += 0.01;
+            scene.rotation.y += 0.01;
+            renderer.render(scene, camera);
+        };
+        animate();
+
+        // allow user to resize the window
+        window.addEventListener('resize', function () {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // allow user to click on the canvas
+        document.getElementById('canvas').addEventListener('click', function () {
+            renderer.setClearColor(0x000000, 1);
+        });
+
+        // allow user to rotate the scene with the mouse
+        var mouseDown = false;
+        var onMouseDown = function (event) {
+            mouseDown = true;
+            document.getElementById('canvas').addEventListener('mousemove', onMouseMove, false);
+        };
+        var onMouseUp = function (event) {
+            mouseDown = false;
+            document.getElementById('canvas').removeEventListener('mousemove', onMouseMove, false);
+        };
+        var onMouseMove = function (event) {
+            if (mouseDown) {
+                scene.rotation.x += (event.movementY / 100) * 0.5;
+                scene.rotation.y += (event.movementX / 100) * 0.5;
+            }
+        };
+        document.getElementById('canvas').addEventListener('mousedown', onMouseDown, false);
+        document.getElementById('canvas').addEventListener('mouseup', onMouseUp, false);
+
+
+
+    </script>
+
+    
+
+</body>
+</html>
+
+
